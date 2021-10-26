@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionCore", "VisionCore\VisionCore.csproj", "{ADCE39E9-1284-40A0-9347-FAD9D9046A54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionCoreTest", "VisionCoreTest\VisionCoreTest.csproj", "{8B2C2B47-365D-4EBF-87CC-567A86878A39}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADCE39E9-1284-40A0-9347-FAD9D9046A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCE39E9-1284-40A0-9347-FAD9D9046A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCE39E9-1284-40A0-9347-FAD9D9046A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCE39E9-1284-40A0-9347-FAD9D9046A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
