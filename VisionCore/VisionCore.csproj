@@ -4,4 +4,9 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="libtorch-cuda-11.3-win-x64" Version="1.10.0.1" />
+      <PackageReference Include="TorchSharp" Version="0.95.3" />
+    </ItemGroup>
+
 </Project>
