@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionCore", "VisionCore\Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionCoreTest", "VisionCoreTest\VisionCoreTest.csproj", "{8B2C2B47-365D-4EBF-87CC-567A86878A39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameFeeder", "FrameFeeder\FrameFeeder.csproj", "{399EFC33-C801-4BEB-9A3C-68E46668357E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B2C2B47-365D-4EBF-87CC-567A86878A39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{399EFC33-C801-4BEB-9A3C-68E46668357E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{399EFC33-C801-4BEB-9A3C-68E46668357E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{399EFC33-C801-4BEB-9A3C-68E46668357E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{399EFC33-C801-4BEB-9A3C-68E46668357E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
