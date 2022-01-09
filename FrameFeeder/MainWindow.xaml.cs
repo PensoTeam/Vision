@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using OpenCvSharp;
-using OpenCvSharp.Extensions;
 using OpenCvSharp.WpfExtensions;
+using VisionCore;
 
 namespace FrameFeeder
 {
@@ -78,22 +66,31 @@ namespace FrameFeeder
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
-            Mat frame = new Mat();
             _loop = true;
-
-            while (_loop)
+            using (var frame = new Mat())
+            using (var detector = new FaceDetector())
             {
-                if (_cap.Read(frame))
+                while (_loop)
                 {
-                    Cv2.Flip(frame, frame, FlipMode.Y);
-                    WriteableBitmapConverter.ToWriteableBitmap(frame, _wb);
-                    Image.Source = _wb;
-                }
+                    if (_cap.Read(frame))
+                    {
+                        Cv2.Flip(frame, frame, FlipMode.Y);
+                        var faces = detector.GetFacePosition(frame);
 
-                int c = Cv2.WaitKey(33);
-                
-                if (c != -1)
-                    break;
+                        foreach (var face in faces)
+                        {
+                            Cv2.Rectangle(frame, new OpenCvSharp.Point(face.Left, face.Top), new OpenCvSharp.Point(face.Right, face.Bottom), Scalar.Aqua, 2, LineTypes.AntiAlias);
+                        }
+                        
+                        WriteableBitmapConverter.ToWriteableBitmap(frame, _wb);
+                        Image.Source = _wb;
+                    }
+
+                    int c = Cv2.WaitKey(33);
+
+                    if (c != -1)
+                        break;
+                }
             }
         }
     }

@@ -12,4 +12,8 @@
       <PackageReference Include="OpenCvSharp4.Windows" Version="4.5.3.20210817" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\VisionCore\VisionCore.csproj" />
+    </ItemGroup>
+
 </Project>
