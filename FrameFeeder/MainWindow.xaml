@@ -9,6 +9,7 @@
         Loaded="WindowLoaded" Closing="WindowClosing">
     <Grid>
         <Image x:Name="Image" Height="411" Margin="16,10,6,0" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <Button x:Name="Button" Content="Button" Margin="0,443,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="74" Click="ButtonClick" />
+        <Button x:Name="StartBtn" Content="Start Cam" Margin="0,443,100,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="74" Click="StartBtnClick" />
+        <Button x:Name="StopBtn" Content="Stop Cam" Margin="100,443,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="74" Click="StopBtnClick" />
     </Grid>
 </Window>

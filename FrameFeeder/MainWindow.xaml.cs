@@ -64,7 +64,7 @@ namespace FrameFeeder
             }
         }
 
-        private void ButtonClick(object sender, RoutedEventArgs e)
+        private void StartBtnClick(object sender, RoutedEventArgs e)
         {
             _loop = true;
             using (var frame = new Mat())
@@ -92,6 +92,11 @@ namespace FrameFeeder
                         break;
                 }
             }
+        }
+
+        private void StopBtnClick(object sender, RoutedEventArgs e)
+        {
+            _loop = false;
         }
     }
 }
