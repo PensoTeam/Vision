@@ -10,12 +10,12 @@ namespace VisionCore
     /// </summary>
     public class FaceDetector: IDisposable
     {
-        private readonly FrontalFaceDetector _mDetector;
+        private readonly FrontalFaceDetector _detector;
         private bool _disposed;
 
         public FaceDetector()
         {
-            _mDetector = Dlib.GetFrontalFaceDetector();
+            _detector = Dlib.GetFrontalFaceDetector();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace VisionCore
             using (var cimg = Dlib.LoadImageData<BgrPixel>(array, (uint) img.Height, (uint) img.Width,
                        (uint) (img.Width * img.ElemSize())))
             {
-                var faces = _mDetector.Operator(cimg);
+                var faces = _detector.Operator(cimg);
                 return faces;
             }
         }
@@ -40,7 +40,7 @@ namespace VisionCore
         {
             if (_disposed == false)
             {
-                _mDetector.Dispose();
+                _detector.Dispose();
                 _disposed = true;
             }
         }
