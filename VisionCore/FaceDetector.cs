@@ -5,6 +5,9 @@ using OpenCvSharp;
 
 namespace VisionCore
 {
+    /// <summary>
+    /// Detector of position and landmarks of faces in image.
+    /// </summary>
     public class FaceDetector: IDisposable
     {
         private readonly FrontalFaceDetector _mDetector;
@@ -15,7 +18,12 @@ namespace VisionCore
             _mDetector = Dlib.GetFrontalFaceDetector();
         }
 
-        public Rectangle[] GetFacePosition(Mat img)
+        /// <summary>
+        /// Get position of faces in an image.
+        /// </summary>
+        /// <param name="img">OpenCV Mat array to find face positions.</param>
+        /// <returns>Positions of detected faces.</returns>
+        public Rectangle[] GetFacePositions(Mat img)
         {
             var array = new byte[img.Width * img.Height * img.ElemSize()];
             Marshal.Copy(img.Data, array, 0, array.Length);

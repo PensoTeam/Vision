@@ -75,7 +75,7 @@ namespace FrameFeeder
                     if (_cap.Read(frame))
                     {
                         Cv2.Flip(frame, frame, FlipMode.Y);
-                        var faces = detector.GetFacePosition(frame);
+                        var faces = detector.GetFacePositions(frame);
 
                         foreach (var face in faces)
                         {
