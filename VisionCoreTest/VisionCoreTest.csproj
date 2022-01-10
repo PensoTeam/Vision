@@ -24,4 +24,8 @@
         <ProjectReference Include="..\VisionCore\VisionCore.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="data" />
+    </ItemGroup>
+
 </Project>
