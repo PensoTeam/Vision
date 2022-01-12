@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using VisionCore;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace VisionCoreTest
 {
@@ -21,10 +22,19 @@ namespace VisionCoreTest
         [Fact]
         public void TestFaceNum()
         {
-            using (var img = Cv2.ImRead("../../../../VisionCoreTest/data/Lenna.png"))
+            var images = new string[] {"Denis_Mukwege.jpg", "dog_backpack.jpg", "gorilla.jpg"};
+            foreach (var image in images)
             {
-                var faces = _faceDetector.GetFacePositions(img);
-                Assert.Single(faces);
+                using (var img = Cv2.ImRead("../../../../VisionCoreTest/data/" + image))
+                {
+                    var faces = _faceDetector.GetFacePositions(img);
+                    
+                    if (image == "Denis_Mukwege.jpg")
+                        Assert.Single(faces);
+                    
+                    else
+                        Assert.Empty(faces);
+                }
             }
         }
     }
