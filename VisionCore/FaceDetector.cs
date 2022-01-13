@@ -43,7 +43,7 @@ namespace VisionCore
                 _disposed = true;
             }
         }
-        
+
         ~FaceDetector()
         {
             Dispose();
