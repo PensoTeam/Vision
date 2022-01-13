@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using OpenCvSharp;
@@ -86,7 +86,7 @@ namespace FrameFeeder
                         Image.Source = _wb;
                     }
 
-                    int c = Cv2.WaitKey(33);
+                    int c = Cv2.WaitKey(1000 / 33);
 
                     if (c != -1)
                         break;
