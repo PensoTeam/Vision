@@ -8,7 +8,7 @@ namespace VisionCore
     /// <summary>
     /// Detector of position and landmarks of faces in image.
     /// </summary>
-    public class FaceDetector: IDisposable
+    public class FaceDetector : IDisposable
     {
         private readonly FrontalFaceDetector _detector;
         private bool _disposed;
@@ -28,8 +28,7 @@ namespace VisionCore
             var array = new byte[img.Width * img.Height * img.ElemSize()];
             Marshal.Copy(img.Data, array, 0, array.Length);
 
-            using (var cimg = Dlib.LoadImageData<BgrPixel>(array, (uint) img.Height, (uint) img.Width,
-                       (uint) (img.Width * img.ElemSize())))
+            using (var cimg = Dlib.LoadImageData<BgrPixel>(array, (uint)img.Height, (uint)img.Width, (uint)(img.Width * img.ElemSize())))
             {
                 var faces = _detector.Operator(cimg);
                 return faces;
@@ -45,7 +44,6 @@ namespace VisionCore
             }
         }
         
-
         ~FaceDetector()
         {
             Dispose();
