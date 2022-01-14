@@ -1,0 +1,27 @@
+{
+  "name": "vision",
+  "version": "1.0.0",
+  "description": "<img src=\"./Media/Logo.png\" width=256 height=256 />",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PensoTeam/Vision"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PensoTeam/Vision/issues"
+  },
+  "homepage": "https://github.com/PensoTeam/Vision#readme",
+  "devDependencies": {
+    "husky": "^7.0.0",
+    "lint-staged": "^12.1.7"
+  },
+  "lint-staged": {
+    "*.cs": "dotnet format --include"
+  }
+}

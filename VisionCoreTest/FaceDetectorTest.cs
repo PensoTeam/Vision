@@ -22,8 +22,8 @@ namespace VisionCoreTest
         [Fact]
         public void TestFaceNum()
         {
-            var images = new string[] {"Denis_Mukwege.jpg", "dog_backpack.jpg", "gorilla.jpg"};
-            
+            var images = new string[] { "Denis_Mukwege.jpg", "dog_backpack.jpg", "gorilla.jpg" };
+
             foreach (var image in images)
             {
                 using (var img = Cv2.ImRead("../../../../VisionCoreTest/data/" + image))
