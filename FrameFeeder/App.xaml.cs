@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows;
 
 namespace FrameFeeder
@@ -13,5 +9,21 @@ namespace FrameFeeder
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+#if DEBUG
+            if (Debugger.IsAttached == false)
+            {
+                NativeMethods.AllocConsole();
+            }
+#endif
+        }
+    }
+
+    static class NativeMethods
+    {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool AllocConsole();
     }
 }
