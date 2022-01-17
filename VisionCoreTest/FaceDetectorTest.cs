@@ -28,16 +28,16 @@ namespace VisionCoreTest
             {
                 using (var img = Cv2.ImRead("../../../../VisionCoreTest/data/" + image))
                 {
-                    var faces = _faceDetector.GetFacePositions(img);
+                    var infos = _faceDetector.GetFaceInfos(img);
 
                     if (image == "Denis_Mukwege.jpg")
                     {
-                        Assert.Single(faces);
+                        Assert.Single(infos);
                     }
 
                     else
                     {
-                        Assert.Empty(faces);
+                        Assert.Empty(infos);
                     }
                 }
             }

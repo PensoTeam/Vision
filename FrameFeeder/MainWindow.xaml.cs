@@ -77,12 +77,19 @@ namespace FrameFeeder
                     if (_cap.Read(frame))
                     {
                         Cv2.Flip(frame, frame, FlipMode.Y);
-                        var faces = detector.GetFacePositions(frame);
+                        var infos = detector.GetFaceInfos(frame);
 
-                        foreach (var face in faces)
+                        foreach (var info in infos)
                         {
-                            Cv2.Rectangle(frame, new OpenCvSharp.Point(face.Left, face.Top),
-                                new OpenCvSharp.Point(face.Right, face.Bottom), Scalar.Aqua, 2, LineTypes.AntiAlias);
+                            var position = info.Item1;
+                            Cv2.Rectangle(frame, new OpenCvSharp.Point(position.Left, position.Top), new OpenCvSharp.Point(position.Right, position.Bottom), Scalar.Aqua, 2, LineTypes.AntiAlias);
+
+                            var shape = info.Item2;
+                            for (uint i = 0; i < shape.Parts; i++)
+                            {
+                                var part = shape.GetPart(i);
+                                Cv2.Circle(frame, part.X, part.Y, 2, Scalar.Gold);
+                            }
                         }
 
                         WriteableBitmapConverter.ToWriteableBitmap(frame, _wb);
