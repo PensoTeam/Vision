@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -91,7 +90,7 @@ namespace FrameFeeder
                         Image.Source = _wb;
                     }
 
-                    int c = Cv2.WaitKey(1000 / 33);
+                    int c = Cv2.WaitKey(1000 / 30);
 
                     if (c != -1)
                     {
