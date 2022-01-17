@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using OpenCvSharp;
@@ -103,5 +105,12 @@ namespace FrameFeeder
         {
             _loop = false;
         }
+    }
+
+    static class NativeMethods
+    {
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool AllocConsole();
     }
 }
