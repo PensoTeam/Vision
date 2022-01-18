@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -32,8 +31,6 @@ namespace VisionCore
         /// <returns>Position and shape of faces in image.</returns>
         public (Rectangle position, FullObjectDetection shape)[] GetFaceInfos(Mat img)
         {
-            var faces = new List<Tuple<Rectangle, FullObjectDetection>>();
-
             var array = new byte[img.Width * img.Height * img.ElemSize()];
             Marshal.Copy(img.Data, array, 0, array.Length);
 
