@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using DlibDotNet;
 using OpenCvSharp;
@@ -19,22 +20,17 @@ namespace VisionCore
         public FaceDetector()
         {
             _frontalFaceDetector = Dlib.GetFrontalFaceDetector();
+
             var path = Path.GetFullPath("./shape_predictor_68_face_landmarks.dat");
             _shapePredictor = ShapePredictor.Deserialize(path);
         }
 
         /// <summary>
-        /// Get position of faces in an image.
+        /// Get information of faces in an image.
         /// </summary>
-        /// <param name="img">Dlib 2D array to find face positions.</param>
-        /// <returns>Positions of detected faces.</returns>
-        private Rectangle[] GetFacePositions(Array2D<BgrPixel> img)
-        {
-            var faces = _frontalFaceDetector.Operator(img);
-            return faces;
-        }
-
-        public List<Tuple<Rectangle, FullObjectDetection>> GetFaceInfos(Mat img)
+        /// <param name="img">Image to find faces in OpenCV Mat type.</param>
+        /// <returns>Position and shape of faces in image.</returns>
+        public (Rectangle position, FullObjectDetection shape)[] GetFaceInfos(Mat img)
         {
             var faces = new List<Tuple<Rectangle, FullObjectDetection>>();
 
@@ -43,16 +39,58 @@ namespace VisionCore
 
             using (var cimg = Dlib.LoadImageData<BgrPixel>(array, (uint)img.Height, (uint)img.Width, (uint)(img.Width * img.ElemSize())))
             {
-                var facePositions = GetFacePositions(cimg);
+                var positions = GetFacePositions(cimg);
+                var shapes = PredictFacesShape(cimg, positions);
 
-                foreach (var position in facePositions)
-                {
-                    var predicted = _shapePredictor.Detect(cimg, position);
-                    faces.Add(new Tuple<Rectangle, FullObjectDetection>(position, predicted));
-                }
-
-                return faces;
+                return ZipInfos(positions, shapes);
             }
+        }
+
+        /// <summary>
+        /// Get position of faces in an image.
+        /// </summary>
+        /// <param name="img">Image to find faces in Dlib Array2D type.</param>
+        /// <returns>Position of faces in image.</returns>
+        private Rectangle[] GetFacePositions(Array2D<BgrPixel> img)
+        {
+            return _frontalFaceDetector.Operator(img);
+        }
+
+        /// <summary>
+        /// Predict shape of detected faces.
+        /// </summary>
+        /// <param name="img">Image to predict shape of faces in Dlib Array2D type.</param>
+        /// <param name="positions">Position of faces to predict shape.</param>
+        /// <returns>Shape of faces in image.</returns>
+        private FullObjectDetection[] PredictFacesShape(Array2D<BgrPixel> img, Rectangle[] positions)
+        {
+            var shapes = new FullObjectDetection[positions.Length];
+
+            foreach (var item in positions.Select((position, index) => (position, index)))
+            {
+                var shape = _shapePredictor.Detect(img, item.position);
+                shapes[item.index] = shape;
+            }
+
+            return shapes;
+        }
+
+        /// <summary>
+        /// Zip position and shape of faces into tuple.
+        /// </summary>
+        /// <param name="positions">Position of faces.</param>
+        /// <param name="shapes">Shapes of faces.</param>
+        /// <returns>Tuple array that is zipped with position and shape of face.</returns>
+        private static (Rectangle, FullObjectDetection)[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes)
+        {
+            var faces = new (Rectangle, FullObjectDetection)[positions.Length];
+
+            for (var i = 0; i < positions.Length; i++)
+            {
+                faces[i] = (positions[i], shapes[i]);
+            }
+
+            return faces;
         }
 
         public void Dispose()

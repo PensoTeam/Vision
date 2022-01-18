@@ -81,14 +81,14 @@ namespace FrameFeeder
 
                         foreach (var info in infos)
                         {
-                            var position = info.Item1;
+                            var position = info.position;
                             Cv2.Rectangle(frame, new OpenCvSharp.Point(position.Left, position.Top), new OpenCvSharp.Point(position.Right, position.Bottom), Scalar.Aqua, 2, LineTypes.AntiAlias);
 
-                            var shape = info.Item2;
+                            var shape = info.shape;
                             for (uint i = 0; i < shape.Parts; i++)
                             {
                                 var part = shape.GetPart(i);
-                                Cv2.Circle(frame, part.X, part.Y, 2, Scalar.Gold);
+                                Cv2.Circle(frame, part.X, part.Y, 3, Scalar.LightGreen);
                             }
                         }
 
