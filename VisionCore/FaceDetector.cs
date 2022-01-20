@@ -76,7 +76,7 @@ namespace VisionCore
             return shapes;
         }
 
-        private static void GetEyeballsPosition(Mat img, FullObjectDetection[] shapes)
+        private void GetEyeballsPosition(Mat img, FullObjectDetection[] shapes)
         {
             foreach (var shape in shapes)
             {
@@ -103,7 +103,7 @@ namespace VisionCore
             }
         }
 
-        private static void MaskOnEyes(Mat mask, FullObjectDetection shape)
+        private void MaskOnEyes(Mat mask, FullObjectDetection shape)
         {
             var keypointIndices = new[] { new uint[] { 36, 37, 38, 39, 40, 41 }, new uint[] { 42, 43, 44, 45, 46, 47 } };
 
@@ -121,7 +121,7 @@ namespace VisionCore
             }
         }
 
-        private static OpenCvSharp.Point[] ContourEyeball(Mat img, Mat eyes)
+        private OpenCvSharp.Point[] ContourEyeball(Mat img, Mat eyes)
         {
             var eyeballs = new OpenCvSharp.Point[2];
 
@@ -145,7 +145,7 @@ namespace VisionCore
         /// <param name="positions">Position of faces.</param>
         /// <param name="shapes">Shapes of faces.</param>
         /// <returns>Tuple array that is zipped with position and shape of face.</returns>
-        private static (Rectangle, FullObjectDetection)[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes)
+        private (Rectangle, FullObjectDetection)[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes)
         {
             var faces = new (Rectangle, FullObjectDetection)[positions.Length];
 
