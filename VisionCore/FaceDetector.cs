@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using DlibDotNet;
 using OpenCvSharp;
+using Point = OpenCvSharp.Point;
 
 namespace VisionCore
 {
@@ -31,8 +32,8 @@ namespace VisionCore
         /// Get information of faces in an image.
         /// </summary>
         /// <param name="img">Image to find faces in OpenCV Mat type.</param>
-        /// <returns>Position and shape of faces in image.</returns>
-        public (Rectangle position, FullObjectDetection shape)[] GetFaceInfos(Mat img)
+        /// <returns>Position and shape of faces in image and position of eyeballs in faces.</returns>
+        public (Rectangle position, FullObjectDetection shape, (Point left, Point right) eyeballs)[] GetFaceInfos(Mat img)
         {
             var array = new byte[img.Width * img.Height * img.ElemSize()];
             Marshal.Copy(img.Data, array, 0, array.Length);
@@ -41,9 +42,9 @@ namespace VisionCore
             {
                 var positions = GetFacePositions(cimg);
                 var shapes = PredictFacesShape(cimg, positions);
-                GetEyeballsPosition(img, shapes);
+                var eyeballs = GetEyeballsPosition(img, shapes);
 
-                return ZipInfos(positions, shapes);
+                return ZipInfos(positions, shapes, eyeballs);
             }
         }
 
@@ -76,67 +77,84 @@ namespace VisionCore
             return shapes;
         }
 
-        private void GetEyeballsPosition(Mat img, FullObjectDetection[] shapes)
+        private (Point left, Point right)[] GetEyeballsPosition(Mat img, FullObjectDetection[] shapes)
         {
-            foreach (var shape in shapes)
+            var eyeballs = new (Point, Point)[shapes.Length];
+
+            foreach (var item in shapes.Select((shape, index) => (shape, index)))
             {
-                var mask = Mat.Zeros(img.Size(), MatType.CV_8U).ToMat();
-                MaskOnEyes(mask, shape);
+                var shape = item.shape;
 
-                var eyes = Mat.Zeros(img.Size(), img.Type()).ToMat();
-                Cv2.BitwiseAnd(img, img, eyes, mask);
-                Cv2.BitwiseNot(eyes, eyes, ~mask);
-                Cv2.CvtColor(eyes, eyes, ColorConversionCodes.BGR2GRAY);
+                var eyes = MaskOnEyes(img, shape);
 
-                var threshold = Cv2.GetTrackbarPos("threshold", "mask");
-                Cv2.Threshold(eyes, eyes, threshold, 255, ThresholdTypes.Binary);
+                var middleOfEyes = (shape.GetPart(41).X + shape.GetPart(44).X) / 2;
+                var roi = new Rect(0, 0, middleOfEyes, img.Height);
 
-                Cv2.Erode(eyes, eyes, new Mat(), iterations: 2);
-                Cv2.Dilate(eyes, eyes, new Mat(), iterations: 4);
-                Cv2.MedianBlur(eyes, eyes, 3);
-                eyes = ~eyes;
+                var left = ContourEyeball(eyes.SubMat(roi), roi.TopLeft);
 
-                ContourEyeball(img, eyes);
+                roi.X = roi.Width;
+                roi.Width = img.Width - roi.Width;
+
+                var right = ContourEyeball(eyes.SubMat(roi), roi.TopLeft);
+
+                eyeballs[item.index] = (left, right);
 
                 Cv2.ImShow("mask", eyes);
-
             }
+
+            return eyeballs;
         }
 
-        private void MaskOnEyes(Mat mask, FullObjectDetection shape)
+        private Mat MaskOnEyes(Mat img, FullObjectDetection shape)
         {
+            var eyes = Mat.Zeros(img.Size(), img.Type()).ToMat();
+            var mask = Mat.Zeros(img.Size(), MatType.CV_8U).ToMat();
             var keypointIndices = new[] { new uint[] { 36, 37, 38, 39, 40, 41 }, new uint[] { 42, 43, 44, 45, 46, 47 } };
 
             foreach (var side in keypointIndices)
             {
-                var points = new OpenCvSharp.Point[side.Length];
+                var points = new Point[side.Length];
 
                 foreach (var item in side.Select((value, index) => (value, index)))
                 {
                     var dlibPoint = shape.GetPart(item.value);
-                    points[item.index] = new OpenCvSharp.Point(dlibPoint.X, dlibPoint.Y);
+                    points[item.index] = new Point(dlibPoint.X, dlibPoint.Y);
                 }
 
                 Cv2.FillConvexPoly(mask, points, Scalar.White);
             }
+
+            Cv2.BitwiseAnd(img, img, eyes, mask);
+            Cv2.BitwiseNot(eyes, eyes, ~mask);
+            Cv2.CvtColor(eyes, eyes, ColorConversionCodes.BGR2GRAY);
+
+            var threshold = Cv2.GetTrackbarPos("threshold", "mask");
+            Cv2.Threshold(eyes, eyes, threshold, 255, ThresholdTypes.Binary);
+
+            Cv2.Erode(eyes, eyes, new Mat(), iterations: 2);
+            Cv2.Dilate(eyes, eyes, new Mat(), iterations: 4);
+            Cv2.MedianBlur(eyes, eyes, 3);
+            eyes = ~eyes;
+
+            return eyes;
         }
 
-        private OpenCvSharp.Point[] ContourEyeball(Mat img, Mat eyes)
+        private Point ContourEyeball(Mat eyes, Point roiOffset)
         {
-            var eyeballs = new OpenCvSharp.Point[2];
-
             Cv2.FindContours(eyes, out var contours, out var _, RetrievalModes.External, ContourApproximationModes.ApproxNone);
 
-            foreach (var item in contours.Select((contour, index) => (contour, index)))
+            if (contours.Length > 0)
             {
-                var m = Cv2.Moments(item.contour);
+                var contour = contours.Aggregate((max, candidate) => Cv2.ContourArea(candidate) > Cv2.ContourArea(max) ? candidate : max);
+
+                var m = Cv2.Moments(contour);
                 var cx = (int)(m.M10 / m.M00);
                 var cy = (int)(m.M01 / m.M00);
 
-                eyeballs[item.index] = new OpenCvSharp.Point(cx, cy);
+                return new Point(cx, cy) + roiOffset;
             }
 
-            return eyeballs;
+            return new Point();
         }
 
         /// <summary>
@@ -144,14 +162,15 @@ namespace VisionCore
         /// </summary>
         /// <param name="positions">Position of faces.</param>
         /// <param name="shapes">Shapes of faces.</param>
+        /// <param name="eyeballs">Position of eyeballs.</param>
         /// <returns>Tuple array that is zipped with position and shape of face.</returns>
-        private (Rectangle, FullObjectDetection)[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes)
+        private (Rectangle, FullObjectDetection, (Point, Point))[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes, (Point left, Point right)[] eyeballs)
         {
-            var faces = new (Rectangle, FullObjectDetection)[positions.Length];
+            var faces = new (Rectangle, FullObjectDetection, (Point, Point))[positions.Length];
 
             for (var i = 0; i < positions.Length; i++)
             {
-                faces[i] = (positions[i], shapes[i]);
+                faces[i] = (positions[i], shapes[i], eyeballs[i]);
             }
 
             return faces;
