@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Jetbrain Rider Cache
 .idea/
+
+# Mac general
+.DS_Store
