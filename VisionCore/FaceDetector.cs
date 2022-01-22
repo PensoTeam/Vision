@@ -33,7 +33,7 @@ namespace VisionCore
         /// </summary>
         /// <param name="img">Image to find faces in OpenCV Mat type.</param>
         /// <returns>Position and shape of faces in image and position of eyeballs in faces.</returns>
-        public (Rectangle position, FullObjectDetection shape, (Point left, Point right) eyeballs)[] GetFaceInfos(Mat img)
+        public FaceInfo[] GetFaceInfos(Mat img)
         {
             var array = new byte[img.Width * img.Height * img.ElemSize()];
             Marshal.Copy(img.Data, array, 0, array.Length);
@@ -63,7 +63,7 @@ namespace VisionCore
         /// </summary>
         /// <param name="img">Image to predict shape of faces in Dlib Array2D type.</param>
         /// <param name="positions">Position of faces to predict shape.</param>
-        /// <returns>Shape of faces in image.</returns>
+        /// <returns>Information of faces in the image.</returns>
         private FullObjectDetection[] PredictFacesShape(Array2D<BgrPixel> img, Rectangle[] positions)
         {
             var shapes = new FullObjectDetection[positions.Length];
@@ -163,14 +163,14 @@ namespace VisionCore
         /// <param name="positions">Position of faces.</param>
         /// <param name="shapes">Shapes of faces.</param>
         /// <param name="eyeballs">Position of eyeballs.</param>
-        /// <returns>Tuple array that is zipped with position and shape of face.</returns>
-        private (Rectangle, FullObjectDetection, (Point, Point))[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes, (Point left, Point right)[] eyeballs)
+        /// <returns>FaceInfo structure array that is zipped with position and shape of face.</returns>
+        private FaceInfo[] ZipInfos(Rectangle[] positions, FullObjectDetection[] shapes, (Point left, Point right)[] eyeballs)
         {
-            var faces = new (Rectangle, FullObjectDetection, (Point, Point))[positions.Length];
+            var faces = new FaceInfo[positions.Length];
 
             for (var i = 0; i < positions.Length; i++)
             {
-                faces[i] = (positions[i], shapes[i], eyeballs[i]);
+                faces[i] = new FaceInfo(positions[i], shapes[i], eyeballs[i]);
             }
 
             return faces;

@@ -81,10 +81,10 @@ namespace FrameFeeder
 
                         foreach (var info in infos)
                         {
-                            var position = info.position;
+                            var position = info.Position;
                             Cv2.Rectangle(frame, new OpenCvSharp.Point(position.Left, position.Top), new OpenCvSharp.Point(position.Right, position.Bottom), Scalar.Aqua, 2, LineTypes.AntiAlias);
 
-                            var eyeballs = info.eyeballs;
+                            var eyeballs = info.Eyeballs;
 
                             Cv2.Circle(frame, eyeballs.left, 3, Scalar.Red, 2);
                             Cv2.Circle(frame, eyeballs.right, 3, Scalar.Red, 2);
