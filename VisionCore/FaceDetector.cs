@@ -23,9 +23,6 @@ namespace VisionCore
 
             var path = Path.GetFullPath("./shape_predictor_68_face_landmarks.dat");
             _shapePredictor = ShapePredictor.Deserialize(path);
-
-            Cv2.NamedWindow("mask");
-            Cv2.CreateTrackbar("threshold", "mask", 255);
         }
 
         /// <summary>
@@ -139,9 +136,7 @@ namespace VisionCore
             Cv2.BitwiseAnd(img, img, eyes, mask);
             Cv2.BitwiseNot(eyes, eyes, ~mask);
             Cv2.CvtColor(eyes, eyes, ColorConversionCodes.BGR2GRAY);
-
-            var threshold = Cv2.GetTrackbarPos("threshold", "mask");
-            Cv2.Threshold(eyes, eyes, threshold, 255, ThresholdTypes.Binary);
+            Cv2.AdaptiveThreshold(eyes, eyes, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 9, 5);
 
             Cv2.Erode(eyes, eyes, new Mat(), iterations: 2);
             Cv2.Dilate(eyes, eyes, new Mat(), iterations: 4);
