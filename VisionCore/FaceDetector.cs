@@ -23,6 +23,8 @@ namespace VisionCore
 
             var path = Path.GetFullPath("./shape_predictor_68_face_landmarks.dat");
             _shapePredictor = ShapePredictor.Deserialize(path);
+
+            Cv2.NamedWindow("mask");
         }
 
         /// <summary>
@@ -137,11 +139,11 @@ namespace VisionCore
             Cv2.BitwiseNot(eyes, eyes, ~mask);
             Cv2.CvtColor(eyes, eyes, ColorConversionCodes.BGR2GRAY);
             Cv2.AdaptiveThreshold(eyes, eyes, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 9, 5);
-
-            Cv2.Erode(eyes, eyes, new Mat(), iterations: 2);
-            Cv2.Dilate(eyes, eyes, new Mat(), iterations: 4);
-            Cv2.MedianBlur(eyes, eyes, 3);
             eyes = ~eyes;
+
+            Cv2.Dilate(eyes, eyes, new Mat(), iterations: 2);
+            Cv2.Erode(eyes, eyes, new Mat(), iterations: 4);
+            Cv2.MedianBlur(eyes, eyes, 3);
 
             return eyes;
         }
